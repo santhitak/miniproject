@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="/css/all.css" rel="stylesheet" />
+    <link href="/css/bulma.css" rel="stylesheet" />
+    <script src="/js/all.js"></script>
+    <script src="/js/vue.js"></script>
+    <title>My ToDo List</title>
+  </head>
+  <body>
+    <section class="hero">
+      <div class="hero-body is-flex">
+        <p class="title">My ToDo List</p>
+      </div>
+    </section>
+    <section id="app">
+      <div class="container">
+        <span class="subtitle mx-2">Completed: {{complete}} Tasks</span>
+        <span class="subtitle mx-2">Incomplete: {{incomplete}} Tasks</span>
+        <span class="subtitle mx-2">Flagged: {{flagged}} Tasks</span>
+        <button class="button is-link mx-5" @click="showAddList = true">
+          <p>Add new list</p>
+          <span class="icon">
+            <i class="fas fa-plus"></i>
+          </span>
+        </button>
+        <br />
+        <br />
+        <div class="columns" v-for="(list, index) in listType" :key="list.id">
+          <div class="column is-8">
+            <div class="is-flex">
+              <p class="title">{{ list.id + ' ' + list.title}}</p>
+              <span
+                class="icon is-small ml-5 mt-3"
+                @click="editListModal(list)"
+              >
+                <i class="fas fa-edit"></i>
+              </span>
+              <span
+                class="icon is-small ml-5 mt-3"
+                @click="showDeleteList = true"
+              >
+                <i class="fas fa-trash-alt"></i>
+              </span>
+            </div>
+            <div
+              class="box level py-3 my-2"
+              v-for="(item, index) in filteredTasks"
+              :key="item.id"
+            >
+              <div class="control">
+                <label class="checkbox">
+                  <input type="checkbox" v-model="item.status" />
+                  <span
+                    v-bind:style="{textDecoration: item.status ? 'line-through' : 'none'}"
+                  >
+                    {{item.id + ' ' + item.title}}
+                    <span v-if="item.duedate != null">
+                      (Due by {{item.duedate}})
+                    </span>
+                    <span
+                      class="icon is-small ml-5"
+                      :style="{display: item.flag ? 'inline-block' : 'none'}"
+                    >
+                      <i class="fas fa-flag"></i>
+                    </span>
+                  </span>
+                </label>
+              </div>
+              <div class="level-right">
+                <span class="icon is-small" @click="editTask(item)">
+                  <i class="fas fa-edit"></i>
+                </span>
+                <span class="icon is-small ml-5" @click="showDelete = true">
+                  <i class="fas fa-trash-alt"></i>
+                </span>
+              </div>
+              <div class="modal" :class="{'is-active' : showModal}">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                  <header class="modal-card-head">
+                    <p class="modal-card-title">Edit Task</p>
+                    <button
+                      class="delete"
+                      aria-label="close"
+                      @click="showModal = false"
+                    ></button>
+                  </header>
+                  <section class="modal-card-body">
+                    <div class="field">
+                      <input
+                        class="input"
+                        placeholder="Task Name"
+                        v-model="editTaskName"
+                      />
+                    </div>
+                    <div class="field-body">
+                      <div class="field">
+                        <input
+                          class="input"
+                          type="date"
+                          v-model="editDuedate"
+                        />
+                      </div>
+                      <div class="field">
+                        <div class="select">
+                          <select v-model="checkList">
+                            <option value="idle">Select List</option>
+                            <option
+                              v-for="data in listType"
+                              :key="data.id"
+                              :value="data.id"
+                            >
+                              {{data.title}}
+                            </option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="field">
+                        <div class="control">
+                          <input type="checkbox" v-model="editFlag" />
+                        </div>
+                      </div>
+                      Flag
+                      <div class="field">
+                        <div class="control is-flex is-flex-direction-row">
+                          <p
+                            class="mx-1 icon has-text-dark"
+                            @click="isSelectedBlack = true"
+                          >
+                            <i
+                              class="fas fa-circle"
+                              :class="{'fa-check-circle': isSelectedBlack }"
+                            ></i>
+                          </p>
+                          <span
+                            class="mx-1 icon has-text-danger"
+                            @click="selectMark(isSelectedRed)"
+                          >
+                            <i
+                              class="fas"
+                              :class="[isSelectedRed ? 'fa-check-circle' : 'fa-circle']"
+                            ></i>
+                          </span>
+                          <span
+                            class="mx-1 icon has-text-success"
+                            @click="selectMark(isSelectedGreen )"
+                          >
+                            <i
+                              class="fas"
+                              :class="[isSelectedGreen ? 'fa-check-circle' : 'fa-circle']"
+                            ></i>
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                  <footer class="modal-card-foot">
+                    <button class="button is-success" @click="saveEdit">
+                      Save
+                    </button>
+                    <button class="button" @click="showModal = false">
+                      Cancel
+                    </button>
+                  </footer>
+                </div>
+              </div>
+              <div class="modal" :class="{'is-active' : showDelete}">
+                <div class="modal-background"></div>
+                <div class="modal-card">
+                  <header class="modal-card-head">
+                    <p class="modal-card-title">Delete Task</p>
+                    <button
+                      class="delete"
+                      aria-label="close"
+                      @click="showDelete = false"
+                    ></button>
+                  </header>
+                  <section class="modal-card-body">
+                    <p>Are you sure you want to delete '{{item.title}}'?</p>
+                  </section>
+                  <footer class="modal-card-foot">
+                    <button class="button is-danger" @click="deleteItem()">
+                      Confirm
+                    </button>
+                    <button class="button" @click="showDelete = false">
+                      Cancel
+                    </button>
+                  </footer>
+                </div>
+              </div>
+            </div>
+            <div class="modal" :class="{'is-active' : showAddList}">
+              <div class="modal-background"></div>
+              <div class="modal-card">
+                <header class="modal-card-head">
+                  <p class="modal-card-title">Add new list</p>
+                  <button
+                    class="delete"
+                    aria-label="close"
+                    @click="showAddList = false"
+                  ></button>
+                </header>
+                <section class="modal-card-body">
+                  <input class="input" v-model="listName" />
+                </section>
+                <footer class="modal-card-foot">
+                  <button class="button is-success" @click="addNewList()">
+                    Confirm
+                  </button>
+                  <button class="button" @click="showAddList = false">
+                    Cancel
+                  </button>
+                </footer>
+              </div>
+            </div>
+            <div class="modal" :class="{'is-active' : showEditList}">
+              <div class="modal-background"></div>
+              <div class="modal-card">
+                <header class="modal-card-head">
+                  <p class="modal-card-title">Edit list</p>
+                  <button
+                    class="delete"
+                    aria-label="close"
+                    @click="showEditList = false"
+                  ></button>
+                </header>
+                <section class="modal-card-body">
+                  <input class="input" v-model="editListName" />
+                </section>
+                <footer class="modal-card-foot">
+                  <button class="button is-success" @click="saveEditList">
+                    Confirm
+                  </button>
+                  <button class="button" @click="showEditList = false">
+                    Cancel
+                  </button>
+                </footer>
+              </div>
+            </div>
+            <div class="modal" :class="{'is-active' : showDeleteList}">
+              <div class="modal-background"></div>
+              <div class="modal-card">
+                <header class="modal-card-head">
+                  <p class="modal-card-title">Delete List</p>
+                  <button
+                    class="delete"
+                    aria-label="close"
+                    @click="showDeleteList = false"
+                  ></button>
+                </header>
+                <section class="modal-card-body">
+                  <p>Are you sure you want to delete '{{list.title}}'?</p>
+                </section>
+                <footer class="modal-card-foot">
+                  <button class="button is-danger" @click="deleteList(index)">
+                    Confirm
+                  </button>
+                  <button class="button" @click="showDeleteList = false">
+                    Cancel
+                  </button>
+                </footer>
+              </div>
+            </div>
+          </div>
+          <div class="column is-3">
+            <p class="subtitle my-3">{{list.title}}</p>
+            <div class="card">
+              <header class="card-header has-background-link">
+                <p class="card-header-title has-text-white-bis">Filters</p>
+                <p class="card-header-icon">
+                  <span class="card-header-icon icon has-text-white-bis">
+                    <i class="fas fa-filter"></i>
+                  </span>
+                </p>
+              </header>
+              <div class="card-content">
+                <div class="content">
+                  <div class="control">
+                    <label class="checkbox">
+                      <input type="checkbox" v-model="hideDone" />
+                      Hide completed tasks
+                    </label>
+                  </div>
+                  <div class="control">
+                    <label class="checkbox">
+                      <input type="checkbox" v-model="showFlag" />
+                      Show only flagged task
+                    </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br />
+            <div class="card">
+              <header class="card-header has-background-link">
+                <p class="card-header-title has-text-white-bis">Sort</p>
+                <p class="card-header-icon">
+                  <span class="card-header-icon icon has-text-white-bis">
+                    <i class="fas fa-filter"></i>
+                  </span>
+                </p>
+              </header>
+              <div class="card-content">
+                <div class="content">
+                  <div class="control">
+                    <input
+                      type="radio"
+                      v-model="sortAlphabet"
+                      name="filter"
+                      @click="sortAlphabet = true"
+                    />
+                    <label class="radio"> Sort alphabetically </label><br />
+                    <input
+                      type="radio"
+                      id="list.id"
+                      v-model="sortUndone"
+                      name="filter"
+                    />
+                    <label class="radio"> Sort incomplete tasks </label><br />
+                    <input type="radio" v-model="sortFlag" name="filter" />
+                    <label class="radio"> Sort flagged task first </label><br />
+                    <input type="radio" v-model="sortDate" name="filter" />
+                    <label class="radio"> Sort by due date (ascending) </label>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="columns my-5">
+          <div class="column is-10">
+            <div class="field-body">
+              <div class="field">
+                <div class="control">
+                  <input
+                    class="input"
+                    type="text"
+                    placeholder="Task Name"
+                    v-model="taskName"
+                    style="min-width: 200px"
+                  />
+                  <br />
+                  <p v-if="error.taskName != ''" class="has-text-danger">
+                    {{error.taskName}}
+                  </p>
+                </div>
+              </div>
+              <div class="field">
+                <div class="select">
+                  <select v-model="checkList" style="min-width: 200px">
+                    <option value="idle">Select List</option>
+                    <option
+                      v-for="data in listType"
+                      :key="data.id"
+                      :value="data.id"
+                    >
+                      {{data.title}}
+                    </option>
+                  </select>
+                  <p v-if="error.select != ''" class="has-text-danger">
+                    {{error.select}}
+                  </p>
+                </div>
+              </div>
+              <div class="field">
+                <input class="input" type="date" v-model="duedate" />
+              </div>
+              <div class="field">
+                <div class="control">
+                  <input type="checkbox" v-model="flagActive" />
+                </div>
+              </div>
+              <span class="mr-3">Flag</span>
+              <div class="field">
+                <div class="control is-flex is-flex-direction-row">
+                  <span
+                    class="mx-1 icon has-text-dark"
+                    @click="isSelectedBlack = true"
+                  >
+                    <i v-if="!isSelectedBlack" class="fas fa-circle"></i>
+                  </span>
+                  <span
+                    class="mx-1 icon has-text-dark"
+                    @click="isSelectedBlack = false"
+                  >
+                    <i v-if="isSelectedBlack" class="fas fa-check-circle"></i>
+                  </span>
+                  <span
+                    class="mx-1 icon has-text-danger"
+                    @click="selectMark(isSelectedRed)"
+                  >
+                    <i
+                      class="fas"
+                      :class="[isSelectedRed ? 'fa-check-circle' : 'fa-circle']"
+                    ></i>
+                  </span>
+                  <span
+                    class="mx-1 icon has-text-success"
+                    @click="selectMark(isSelectedGreen )"
+                  >
+                    <i
+                      class="fas"
+                      :class="[isSelectedGreen ? 'fa-check-circle' : 'fa-circle']"
+                    ></i>
+                  </span>
+                </div>
+              </div>
+              <div class="field">
+                <p class="control">
+                  <a class="button is-link" @click="addTodo()">
+                    Add New Task
+                  </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script>
+      var app = new Vue({
+        el: "#app",
+        data: {
+          task: [
+            {
+              id: 1,
+              title: "fix leaking faucet",
+              status: false,
+              duedate: null,
+              flag: true,
+              mark: "black",
+              listId: 1,
+            },
+            {
+              id: 2,
+              title: "wash the dishes",
+              status: false,
+              duedate: null,
+              flag: false,
+              mark: "green",
+              listId: 2,
+            },
+            {
+              id: 3,
+              title: "clean up the room",
+              status: false,
+              duedate: null,
+              flag: false,
+              mark: "red",
+              listId: 1,
+            },
+          ],
+
+          listType: [
+            {
+              id: 1,
+              title: "Todo List",
+            },
+            {
+              id: 2,
+              title: "Not Todo List",
+            },
+          ],
+
+          checkItem: false,
+          idCounter: 0,
+          notListId: 0,
+
+          taskName: "",
+          checkList: "idle",
+          duedate: null,
+          flagActive: false,
+          isSelectedBlack: true,
+          isSelectedRed: false,
+          isSelectedGreen: false,
+          error: {
+            taskName: "",
+            select: "",
+            mark: "",
+          },
+
+          editTaskName: "",
+          editTaskId: null,
+          editFlag: false,
+          editList: "idle",
+          editMark: "",
+          editDuedate: null,
+
+          listName: "",
+          listIdCounter: 0,
+
+          editListName: "",
+          editListId: null,
+
+          hideDone: false,
+          showFlag: false,
+          sortUndone: false,
+          sortAlphabet: false,
+          sortFlag: false,
+          sortDate: false,
+
+          showModal: false,
+          showDelete: false,
+          showAddList: false,
+          showEditList: false,
+          showDeleteList: false,
+        },
+        created() {
+          this.idCounter = this.task.length;
+          this.listIdCounter = this.listType.length;
+        },
+        computed: {
+          complete() {
+            return this.task.filter((data) => data.status).length;
+          },
+          incomplete() {
+            return this.task.length - this.complete;
+          },
+          flagged() {
+            return this.task.filter((data) => data.flag).length;
+          },
+          filteredTasks() {
+            function compare(a, b) {
+              if (!a.status && b.status) {
+                return -1;
+              } else if (a.status && !b.status) {
+                return 1;
+              } else {
+                return 0;
+              }
+            }
+
+            function checkflag(a, b) {
+              if (!a.flag && b.flag) {
+                return -1;
+              } else if (a.flag && !b.flag) {
+                return 1;
+              } else {
+                return 0;
+              }
+            }
+
+            function sortAlpha(a, b) {
+              let sortA = a.title.toLowerCase(),
+                sortB = b.title.toLowerCase();
+              if (sortA < sortB) {
+                return -1;
+              }
+              if (sortA > sortB) {
+                return 1;
+              }
+              return 0;
+            }
+
+            if (this.sortUndone) {
+              this.task.sort(compare);
+            } else if (this.sortAlphabet) {
+              this.task.sort(sortAlpha);
+            } else if (this.sortFlag) {
+              this.task.sort(checkflag);
+            } else {
+              return this.task;
+            }
+
+            if (this.showFlag) {
+              return this.task.filter((data) => data.flag);
+            } else if (this.hideDone) {
+              return this.task.filter((data) => !data.status);
+            } else {
+              return this.task;
+            }
+          },
+        },
+        methods: {
+          validateTask() {
+            if (this.taskName == "") {
+              this.error.taskName = "Please fill in the task name";
+              return;
+            }
+            this.error.taskName = "";
+          },
+          validateList() {
+            if (this.checkList == "idle") {
+              this.error.select = "Please select list";
+              return;
+            }
+            this.error.select = "";
+          },
+          addTodo() {
+            this.validateTask();
+            this.validateList();
+            if (this.error.taskName !== "") {
+              return;
+            }
+
+            this.idCounter += 1;
+            this.task.push({
+              id: this.idCounter,
+              title: this.taskName,
+              status: false,
+              flag: this.flagActive,
+              duedate: this.duedate,
+              listId: this.checkList,
+            });
+
+            this.taskName = "";
+            this.flagActive = false;
+            this.duedate = null;
+            this.checkList = "idle";
+          },
+
+          addNewList() {
+            this.listIdCounter += 1;
+            this.listType.push({
+              id: this.listIdCounter,
+              title: this.listName,
+            });
+            console.log(this.listIdCounter);
+            this.listName = "";
+            this.showAddList = false;
+          },
+
+          editTask(item) {
+            this.showModal = true;
+            this.editTaskId = item.id;
+            this.editTaskName = item.title;
+            this.editDuedate = item.duedate;
+            this.editMark = item.mark;
+            this.editList = item.listId;
+            this.editFlag = item.flag;
+          },
+          saveEdit() {
+            let toDo = this.task.filter(
+              (data) => data.id === this.editTaskId
+            )[0];
+            toDo.title = this.editTaskName;
+            toDo.flag = this.editFlag;
+            toDo.mark = this.editMark;
+            toDo.duedate = this.editDuedate;
+            this.showModal = false;
+          },
+          deleteItem(index) {
+            let checkId = this.task.findIndex((data) => data.id == this.index);
+            this.task.splice(checkId, 1);
+            this.showDelete = false;
+          },
+
+          editListModal(item) {
+            this.showEditList = true;
+            console.log(item.title);
+            this.editListName = item.title;
+            this.editListId = item.id;
+          },
+          saveEditList() {
+            let editList = this.listType.filter(
+              (data) => data.id === this.editListId
+            )[0];
+            editList.title = this.editListName;
+            this.showEditList = false;
+          },
+          deleteList(index) {
+            this.listType.splice(index, 1);
+            this.showDeleteList = false;
+            console.log(index);
+          },
+
+          selectMark(color) {
+            console.log(color);
+            this.isSelectedBlack = true;
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
