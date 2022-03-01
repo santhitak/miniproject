@@ -39,10 +39,7 @@
               >
                 <i class="fas fa-edit"></i>
               </span>
-              <span
-                class="icon is-small ml-5 mt-3"
-                @click="showDeleteList = true"
-              >
+              <span class="icon is-small ml-5 mt-3" @click="delList(list)">
                 <i class="fas fa-trash-alt"></i>
               </span>
             </div>
@@ -74,7 +71,7 @@
                 <span class="icon is-small" @click="editTask(item)">
                   <i class="fas fa-edit"></i>
                 </span>
-                <span class="icon is-small ml-5" @click="showDelete = true">
+                <span class="icon is-small ml-5" @click="delItem(item)">
                   <i class="fas fa-trash-alt"></i>
                 </span>
               </div>
@@ -256,7 +253,7 @@
                   <p>Are you sure you want to delete '{{list.title}}'?</p>
                 </section>
                 <footer class="modal-card-foot">
-                  <button class="button is-danger" @click="deleteList(index)">
+                  <button class="button is-danger" @click="deleteList()">
                     Confirm
                   </button>
                   <button class="button" @click="showDeleteList = false">
@@ -490,11 +487,15 @@
           editMark: "",
           editDuedate: null,
 
+          delTaskId: null,
+
           listName: "",
           listIdCounter: 0,
 
           editListName: "",
           editListId: null,
+
+          delListId: null,
 
           hideDone: false,
           showFlag: false,
@@ -643,8 +644,15 @@
             toDo.duedate = this.editDuedate;
             this.showModal = false;
           },
-          deleteItem(index) {
-            let checkId = this.task.findIndex((data) => data.id == this.index);
+
+          delItem(item) {
+            this.showDelete = true;
+            this.delTaskId = item.id;
+          },
+          deleteItem() {
+            let checkId = this.task.findIndex(
+              (data) => data.id == this.delTaskId
+            );
             this.task.splice(checkId, 1);
             this.showDelete = false;
           },
@@ -662,10 +670,17 @@
             editList.title = this.editListName;
             this.showEditList = false;
           },
-          deleteList(index) {
-            this.listType.splice(index, 1);
+
+          delList(item) {
+            this.showDeleteList = true;
+            this.delListId = item.id;
+          },
+          deleteList() {
+            let checkListId = this.listType.findIndex(
+              (data) => data.id == this.delListId
+            );
+            this.listType.splice(checkListId, 1);
             this.showDeleteList = false;
-            console.log(index);
           },
 
           selectMark(color) {
