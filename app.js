@@ -20,7 +20,10 @@ var app = new Vue({
         flag: false,
         mark: "green",
         listId: 2,
-        classObject: {},
+        classObject: {
+          "has-background-success-light": true,
+          "has-text-primary-dark": true,
+        },
       },
       {
         id: 3,
@@ -30,7 +33,10 @@ var app = new Vue({
         flag: false,
         mark: "red",
         listId: 1,
-        classObject: {},
+        classObject: {
+          "has-background-danger-light": true,
+          "has-text-danger-dark": true,
+        },
       },
       {
         id: 4,
@@ -40,7 +46,10 @@ var app = new Vue({
         flag: false,
         mark: "red",
         listId: 1,
-        classObject: {},
+        classObject: {
+          "has-background-danger-light": true,
+          "has-text-danger-dark": true,
+        },
       },
       {
         id: 5,
@@ -48,9 +57,12 @@ var app = new Vue({
         status: false,
         duedate: "2022-05-25",
         flag: false,
-        mark: "red",
+        mark: "green",
         listId: 2,
-        classObject: {},
+        classObject: {
+          "has-background-success-light": true,
+          "has-text-primary-dark": true,
+        },
       },
       {
         id: 6,
@@ -58,7 +70,7 @@ var app = new Vue({
         status: false,
         duedate: null,
         flag: true,
-        mark: "red",
+        mark: "black",
         listId: 2,
         classObject: {},
       },
@@ -97,6 +109,7 @@ var app = new Vue({
     editList: "idle",
     editMark: "",
     editDuedate: 0,
+    editClassObject: {},
 
     delTaskId: 0,
 
@@ -210,13 +223,7 @@ var app = new Vue({
       }
       this.error.select = "";
     },
-    addTodo() {
-      this.validateTask();
-      this.validateList();
-      if (this.error.taskName !== "") {
-        return;
-      }
-
+    configClass() {
       if (this.mark == "green") {
         this.classObject = {
           "has-background-success-light": true,
@@ -227,8 +234,20 @@ var app = new Vue({
           "has-background-danger-light": true,
           "has-text-danger-dark": true,
         };
+      } else {
+        this.classObject = {
+          "": true,
+          "": true,
+        };
       }
-
+    },
+    addTodo() {
+      this.validateTask();
+      this.validateList();
+      if (this.error.taskName !== "") {
+        return;
+      }
+      this.configClass();
       this.idCounter += 1;
       this.task.push({
         id: this.idCounter,
@@ -267,14 +286,35 @@ var app = new Vue({
       this.editMark = item.mark;
       this.editList = item.listId;
       this.editFlag = item.flag;
+      this.editClassObject = item.classObject;
+    },
+    editConfig() {
+      if (this.editMark == "green") {
+        this.editClassObject = {
+          "has-background-success-light": true,
+          "has-text-primary-dark": true,
+        };
+      } else if (this.editMark == "red") {
+        this.editClassObject = {
+          "has-background-danger-light": true,
+          "has-text-danger-dark": true,
+        };
+      } else {
+        this.editClassObject = {
+          "": true,
+          "": true,
+        };
+      }
     },
     saveEdit() {
+      this.editConfig();
       let toDo = this.task.filter((data) => data.id === this.editTaskId)[0];
       toDo.title = this.editTaskName;
       toDo.duedate = this.editDuedate;
       toDo.mark = this.editMark;
       toDo.listId = this.editList;
       toDo.flag = this.editFlag;
+      toDo.classObject = this.editClassObject;
       this.showModal = false;
     },
 

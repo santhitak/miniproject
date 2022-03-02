@@ -123,7 +123,35 @@
                           <input type="checkbox" v-model="editFlag" />
                         </div>
                       </div>
-                      Flag
+                      <span style="color: black">flag</span>
+                      <div class="field ml-4">
+                        <div class="control is-flex is-flex-direction-row">
+                          <span
+                            class="mx-1 icon has-text-dark box is-rounded has-background-dark"
+                            @click="editMark = 'black'"
+                          >
+                            <span v-if="editMark == 'black'">
+                              <i class="fas fa-check-circle has-text-white"></i>
+                            </span>
+                          </span>
+                          <span
+                            class="mx-1 icon has-text-danger box has-background-danger"
+                            @click="editMark = 'red'"
+                          >
+                            <span v-if="editMark == 'red'">
+                              <i class="fas fa-check-circle has-text-white"></i>
+                            </span>
+                          </span>
+                          <span
+                            class="mx-1 icon has-text-success box has-background-success"
+                            @click="editMark = 'green'"
+                          >
+                            <span v-if="editMark == 'green'">
+                              <i class="fas fa-check-circle has-text-white"></i
+                            ></span>
+                          </span>
+                        </div>
+                      </div>
                     </div>
                   </section>
                   <footer class="modal-card-foot">
