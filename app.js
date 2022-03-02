@@ -124,7 +124,8 @@ var app = new Vue({
 
     error: {
       taskName: "",
-      select: "",
+      select: "Please select list",
+      showSelect: false,
       listName: "",
     },
 
@@ -254,26 +255,17 @@ var app = new Vue({
       return filtered;
     },
   },
-  watch: {
-    filters: {
-      handler() {},
-      deep: true,
-    },
-  },
   methods: {
     validateTask() {
       if (this.taskName === "") {
         this.error.taskName = "Please fill in the task name";
+      }
+      if (this.checkList === "idle") {
+        this.error.showSelect = true;
         return;
       }
       this.error.taskName = "";
-    },
-    validateList() {
-      if (this.checkList === "idle") {
-        this.error.select = "Please select list";
-        return;
-      }
-      this.error.select = "";
+      this.error.showSelect = false;
     },
     configClass() {
       if (this.mark === "green") {
@@ -294,7 +286,6 @@ var app = new Vue({
     },
     addTodo() {
       this.validateTask();
-      this.validateList();
       if (this.error.taskName !== "") {
         return;
       }
