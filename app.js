@@ -112,6 +112,24 @@ var app = new Vue({
       },
     ],
 
+    colors: [
+      {
+        id: 1,
+        class: "mx-1 icon has-text-dark box is-rounded has-background-dark",
+        name: "black",
+      },
+      {
+        id: 2,
+        class: "mx-1 icon has-text-danger box has-background-danger",
+        name: "red",
+      },
+      {
+        id: 3,
+        class: "mx-1 icon has-text-success box has-background-success",
+        name: "green",
+      },
+    ],
+
     checkItem: false,
     idCounter: 0,
     notListId: 0,

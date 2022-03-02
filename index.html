@@ -126,31 +126,15 @@
                       </div>
                     </div>
                     <span style="color: black">flag</span>
-                    <div class="field ml-4">
-                      <div class="control is-flex is-flex-direction-row">
+                    <div class="field ml-4 is-flex is-flex-direction-row">
+                      <div class="control" v-for="color in colors">
                         <span
-                          class="mx-1 icon has-text-dark box is-rounded has-background-dark"
-                          @click="editMark = 'black'"
+                          :class="color.class"
+                          @click="editMark = color.name"
                         >
-                          <span v-if="editMark == 'black'">
+                          <span v-if="editMark == color.name">
                             <i class="fas fa-check-circle has-text-white"></i>
                           </span>
-                        </span>
-                        <span
-                          class="mx-1 icon has-text-danger box has-background-danger"
-                          @click="editMark = 'red'"
-                        >
-                          <span v-if="editMark == 'red'">
-                            <i class="fas fa-check-circle has-text-white"></i>
-                          </span>
-                        </span>
-                        <span
-                          class="mx-1 icon has-text-success box has-background-success"
-                          @click="editMark = 'green'"
-                        >
-                          <span v-if="editMark == 'green'">
-                            <i class="fas fa-check-circle has-text-white"></i
-                          ></span>
                         </span>
                       </div>
                     </div>
@@ -387,36 +371,17 @@
               <div class="field ml-3">
                 <input type="checkbox" v-model="flagActive" />
               </div>
-              <span class="mr-3">Flag</span>
-              <div class="field ml-3">
-                <div class="control is-flex is-flex-direction-row">
-                  <span
-                    class="mx-1 icon has-text-dark box is-rounded has-background-dark"
-                    @click="mark = 'black'"
-                  >
-                    <span v-if="mark == 'black'">
+              <span class="mr-4">Flag</span>
+              <div class="field is-flex is-flex-direction-row">
+                <div class="control" v-for="color in colors">
+                  <span :class="color.class" @click="mark = color.name">
+                    <span v-if="mark == color.name">
                       <i class="fas fa-check-circle has-text-white"></i>
                     </span>
-                  </span>
-                  <span
-                    class="mx-1 icon has-text-danger box has-background-danger"
-                    @click="mark = 'red'"
-                  >
-                    <span v-if="mark == 'red'">
-                      <i class="fas fa-check-circle has-text-white"></i>
-                    </span>
-                  </span>
-                  <span
-                    class="mx-1 icon has-text-success box has-background-success"
-                    @click="mark = 'green'"
-                  >
-                    <span v-if="mark == 'green'">
-                      <i class="fas fa-check-circle has-text-white"></i
-                    ></span>
                   </span>
                 </div>
               </div>
-              <div class="field">
+              <div class="field ml-4">
                 <p class="control">
                   <a class="button is-dark" @click="addTodo()">
                     Add New Task
