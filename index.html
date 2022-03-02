@@ -364,14 +364,16 @@
               <div class="field">
                 <div class="control is-flex is-flex-direction-row">
                   <span
-                    class="mx-1 icon has-text-dark"
-                    @click="isSelectedBlack = false"
+                    class="mx-1 icon has-text-dark box has-background-danger"
+                    @click="isSelectedBlack = !isSelectedBlack"
                   >
-                    <i v-if="isSelectedBlack" class="fas fa-check-circle"></i>
+                    <span v-if="isSelectedBlack">
+                      <i class="fas fa-check-circle"></i>
+                    </span>
                   </span>
                   <span
                     class="mx-1 icon has-text-danger box has-background-danger"
-                    @click="isSelectedRed = true"
+                    @click="isSelectedRed = !isSelectedRed"
                   >
                     <span v-if="isSelectedRed">
                       <i class="fas fa-check-circle"></i>
@@ -537,6 +539,16 @@
               return 0;
             }
 
+            function findDate(a, b) {
+              if (a.duedate < b.duedate) {
+                return 1;
+              }
+              if (a.duedate > b.duedate) {
+                return -1;
+              }
+              return 0;
+            }
+
             function sortDate(a, b) {
               return new Date(a.duedate) - new Date(b.duedate);
             }
@@ -548,7 +560,8 @@
             } else if (this.filter == "flag") {
               this.task.sort(checkflag);
             } else if (this.filter == "date") {
-              this.task.sort(sortDate);
+              let newTask = this.task.sort(findDate);
+              return newTask.sort(sortDate);
             } else {
               return this.task;
             }
