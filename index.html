@@ -32,7 +32,7 @@
         <div class="columns" v-for="(list, index) in listType" :key="list.id">
           <div class="column is-8">
             <div class="is-flex">
-              <p class="title">{{ list.id + ' ' + list.title}}</p>
+              <p class="title">{{list.title}}</p>
               <span
                 class="icon is-small ml-5 mt-3"
                 @click="editListModal(list)"
@@ -54,7 +54,7 @@
                   <span
                     v-bind:style="{textDecoration: item.status ? 'line-through' : 'none'}"
                   >
-                    {{item.id + ' ' + item.title}}
+                    {{item.title}}
                     <span v-if="item.duedate != null">
                       (Due by {{item.duedate}})
                     </span>
@@ -177,7 +177,7 @@
                     ></button>
                   </header>
                   <section class="modal-card-body">
-                    <p>Are you sure you want to delete '{{item.title}}'?</p>
+                    <p>Are you sure you want to delete this task'?</p>
                   </section>
                   <footer class="modal-card-foot">
                     <button class="button is-danger" @click="deleteItem()">
@@ -250,7 +250,7 @@
                   ></button>
                 </header>
                 <section class="modal-card-body">
-                  <p>Are you sure you want to delete '{{list.title}}'?</p>
+                  <p>Are you sure you want to delete this list?</p>
                 </section>
                 <footer class="modal-card-foot">
                   <button class="button is-danger" @click="deleteList()">
@@ -481,21 +481,21 @@
           },
 
           editTaskName: "",
-          editTaskId: null,
+          editTaskId: 0,
           editFlag: false,
           editList: "idle",
           editMark: "",
-          editDuedate: null,
+          editDuedate: 0,
 
-          delTaskId: null,
+          delTaskId: 0,
 
           listName: "",
           listIdCounter: 0,
 
           editListName: "",
-          editListId: null,
+          editListId: 0,
 
-          delListId: null,
+          delListId: 0,
 
           hideDone: false,
           showFlag: false,
@@ -557,20 +557,20 @@
               return 0;
             }
 
+            if (this.showFlag) {
+              return this.task.filter((data) => data.flag);
+            } else if (this.hideDone) {
+              return this.task.filter((data) => !data.status);
+            } else {
+              return this.task;
+            }
+
             if (this.sortUndone) {
               this.task.sort(compare);
             } else if (this.sortAlphabet) {
               this.task.sort(sortAlpha);
             } else if (this.sortFlag) {
               this.task.sort(checkflag);
-            } else {
-              return this.task;
-            }
-
-            if (this.showFlag) {
-              return this.task.filter((data) => data.flag);
-            } else if (this.hideDone) {
-              return this.task.filter((data) => !data.status);
             } else {
               return this.task;
             }
@@ -639,9 +639,10 @@
               (data) => data.id === this.editTaskId
             )[0];
             toDo.title = this.editTaskName;
-            toDo.flag = this.editFlag;
-            toDo.mark = this.editMark;
             toDo.duedate = this.editDuedate;
+            toDo.mark = this.editMark;
+            toDo.listId = this.editList;
+            toDo.flag = this.editFlag;
             this.showModal = false;
           },
 
