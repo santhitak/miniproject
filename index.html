@@ -95,6 +95,9 @@
                         placeholder="Task Name"
                         v-model="editTaskName"
                       />
+                      <p v-if="error.taskName != ''" class="has-text-danger">
+                        {{error.taskName}}
+                      </p>
                     </div>
                     <div class="field-body">
                       <div class="field">
@@ -204,6 +207,9 @@
                 </header>
                 <section class="modal-card-body">
                   <input class="input" v-model="listName" />
+                  <p v-if="error.listName != ''" class="has-text-danger">
+                    {{error.listName}}
+                  </p>
                 </section>
                 <footer class="modal-card-foot">
                   <button class="button is-success" @click="addNewList()">
@@ -228,6 +234,9 @@
                 </header>
                 <section class="modal-card-body">
                   <input class="input" v-model="editListName" />
+                  <p v-if="error.listName != ''" class="has-text-danger">
+                    {{error.listName}}
+                  </p>
                 </section>
                 <footer class="modal-card-foot">
                   <button class="button is-success" @click="saveEditList">

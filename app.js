@@ -110,7 +110,7 @@ var app = new Vue({
     error: {
       taskName: "",
       select: "",
-      mark: "",
+      listName: "",
     },
 
     editTaskName: "",
@@ -213,12 +213,6 @@ var app = new Vue({
     },
   },
   methods: {
-    coloredBlock(data) {
-      if (data == "green") {
-        return (this.classObject =
-          "has-background-success-light has-text-primary-dark");
-      }
-    },
     validateTask() {
       if (this.taskName == "") {
         this.error.taskName = "Please fill in the task name";
@@ -276,7 +270,18 @@ var app = new Vue({
       this.mark = "black";
     },
 
+    validateList() {
+      if (this.listName == "") {
+        this.error.listName = "Please fill in the list name";
+        return;
+      }
+      this.error.listName = "";
+    },
     addNewList() {
+      this.validateList();
+      if (this.error.listName !== "") {
+        return;
+      }
       this.listIdCounter += 1;
       this.listType.push({
         id: this.listIdCounter,
@@ -287,6 +292,13 @@ var app = new Vue({
       this.showAddList = false;
     },
 
+    validEditTask() {
+      if (this.editTaskName == "") {
+        this.error.taskName = "Please fill in the task name";
+        return;
+      }
+      this.error.taskName = "";
+    },
     editTask(item) {
       this.showModal = true;
       this.editTaskId = item.id;
@@ -315,6 +327,10 @@ var app = new Vue({
       }
     },
     saveEdit() {
+      this.validEditTask();
+      if (this.error.taskName !== "") {
+        return;
+      }
       this.editConfig();
       let toDo = this.task.filter((data) => data.id === this.editTaskId)[0];
       toDo.title = this.editTaskName;
@@ -336,6 +352,13 @@ var app = new Vue({
       this.showDelete = false;
     },
 
+    validEditList() {
+      if (this.editListName == "") {
+        this.error.listName = "Please fill in the list name";
+        return;
+      }
+      this.error.listName = "";
+    },
     editListModal(item) {
       this.showEditList = true;
       console.log(item.title);
@@ -343,6 +366,10 @@ var app = new Vue({
       this.editListId = item.id;
     },
     saveEditList() {
+      this.validEditList();
+      if (this.error.listName !== "") {
+        return;
+      }
       let editList = this.listType.filter(
         (data) => data.id === this.editListId
       )[0];
