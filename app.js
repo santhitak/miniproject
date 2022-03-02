@@ -10,6 +10,7 @@ var app = new Vue({
         flag: true,
         mark: "black",
         listId: 1,
+        classObject: {},
       },
       {
         id: 2,
@@ -19,6 +20,7 @@ var app = new Vue({
         flag: false,
         mark: "green",
         listId: 2,
+        classObject: {},
       },
       {
         id: 3,
@@ -28,6 +30,7 @@ var app = new Vue({
         flag: false,
         mark: "red",
         listId: 1,
+        classObject: {},
       },
       {
         id: 4,
@@ -37,6 +40,7 @@ var app = new Vue({
         flag: false,
         mark: "red",
         listId: 1,
+        classObject: {},
       },
       {
         id: 5,
@@ -46,6 +50,7 @@ var app = new Vue({
         flag: false,
         mark: "red",
         listId: 2,
+        classObject: {},
       },
       {
         id: 6,
@@ -55,6 +60,7 @@ var app = new Vue({
         flag: true,
         mark: "red",
         listId: 2,
+        classObject: {},
       },
     ],
 
@@ -77,6 +83,7 @@ var app = new Vue({
     checkList: "idle",
     duedate: null,
     flagActive: false,
+    mark: "black",
 
     error: {
       taskName: "",
@@ -101,7 +108,7 @@ var app = new Vue({
 
     delListId: 0,
 
-    filter: "",
+    filter: "alpha",
     hideDone: false,
     showFlag: false,
 
@@ -183,6 +190,12 @@ var app = new Vue({
     },
   },
   methods: {
+    coloredBlock(data) {
+      if (data == "green") {
+        return (this.classObject =
+          "has-background-success-light has-text-primary-dark");
+      }
+    },
     validateTask() {
       if (this.taskName == "") {
         this.error.taskName = "Please fill in the task name";
@@ -204,20 +217,35 @@ var app = new Vue({
         return;
       }
 
+      if (this.mark == "green") {
+        this.classObject = {
+          "has-background-success-light": true,
+          "has-text-primary-dark": true,
+        };
+      } else if (this.mark == "red") {
+        this.classObject = {
+          "has-background-danger-light": true,
+          "has-text-danger-dark": true,
+        };
+      }
+
       this.idCounter += 1;
       this.task.push({
         id: this.idCounter,
         title: this.taskName,
         status: false,
         flag: this.flagActive,
+        mark: this.mark,
         duedate: this.duedate,
         listId: this.checkList,
+        classObject: this.classObject,
       });
 
       this.taskName = "";
       this.flagActive = false;
       this.duedate = null;
       this.checkList = "idle";
+      this.mark = "black";
     },
 
     addNewList() {

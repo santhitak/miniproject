@@ -48,6 +48,7 @@
               v-for="(item, index) in filteredTasks"
               v-if="list.id == item.listId"
               :key="item.id"
+              v-bind:class="item.classObject"
             >
               <div class="control">
                 <label class="checkbox">
@@ -288,6 +289,7 @@
             </div>
           </div>
         </div>
+
         <div class="columns my-5">
           <div class="column is-10">
             <div class="field-body">
@@ -334,25 +336,25 @@
                 <div class="control is-flex is-flex-direction-row">
                   <span
                     class="mx-1 icon has-text-dark box is-rounded has-background-dark"
-                    @click="task.mark = 'black'"
+                    @click="mark = 'black'"
                   >
-                    <span v-if="task.mark == 'black'">
+                    <span v-if="mark == 'black'">
                       <i class="fas fa-check-circle has-text-white"></i>
                     </span>
                   </span>
                   <span
                     class="mx-1 icon has-text-danger box has-background-danger"
-                    @click="task.mark = 'red'"
+                    @click="mark = 'red'"
                   >
-                    <span v-if="task.mark == 'red'">
+                    <span v-if="mark == 'red'">
                       <i class="fas fa-check-circle has-text-white"></i>
                     </span>
                   </span>
                   <span
                     class="mx-1 icon has-text-success box has-background-success"
-                    @click="task.mark = 'green'"
+                    @click="mark = 'green'"
                   >
-                    <span v-if="task.mark == 'green'">
+                    <span v-if="mark == 'green'">
                       <i class="fas fa-check-circle has-text-white"></i
                     ></span>
                   </span>
