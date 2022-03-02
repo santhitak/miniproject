@@ -45,7 +45,7 @@ var app = new Vue({
         duedate: "2022-07-06",
         flag: false,
         mark: "red",
-        listId: 1,
+        listId: 2,
         classObject: {
           "has-background-danger-light": true,
           "has-text-danger-dark": true,
@@ -58,7 +58,7 @@ var app = new Vue({
         duedate: "2022-05-25",
         flag: false,
         mark: "green",
-        listId: 2,
+        listId: 1,
         classObject: {
           "has-background-success-light": true,
           "has-text-primary-dark": true,
@@ -72,6 +72,16 @@ var app = new Vue({
         flag: true,
         mark: "black",
         listId: 2,
+        classObject: {},
+      },
+      {
+        id: 7,
+        title: "practice judo",
+        status: false,
+        duedate: null,
+        flag: true,
+        mark: "black",
+        listId: 1,
         classObject: {},
       },
     ],
@@ -237,7 +247,6 @@ var app = new Vue({
       } else {
         this.classObject = {
           "": true,
-          "": true,
         };
       }
     },
@@ -301,7 +310,6 @@ var app = new Vue({
         };
       } else {
         this.editClassObject = {
-          "": true,
           "": true,
         };
       }

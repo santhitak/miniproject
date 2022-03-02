@@ -176,7 +176,9 @@
                     ></button>
                   </header>
                   <section class="modal-card-body">
-                    <p>Are you sure you want to delete this task?</p>
+                    <p style="color: black">
+                      Are you sure you want to delete this task?
+                    </p>
                   </section>
                   <footer class="modal-card-foot">
                     <button class="button is-danger" @click="deleteItem()">
@@ -328,7 +330,7 @@
                     type="text"
                     placeholder="Task Name"
                     v-model="taskName"
-                    style="min-width: 300px"
+                    style="min-width: 325px"
                   />
                   <br />
                   <p v-if="error.taskName != ''" class="has-text-danger">
@@ -360,7 +362,7 @@
                 <input type="checkbox" v-model="flagActive" />
               </div>
               <span class="mr-3">Flag</span>
-              <div class="field">
+              <div class="field ml-3">
                 <div class="control is-flex is-flex-direction-row">
                   <span
                     class="mx-1 icon has-text-dark box is-rounded has-background-dark"
