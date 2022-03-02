@@ -15,7 +15,7 @@ var app = new Vue({
         id: 2,
         title: "wash the dishes",
         status: false,
-        duedate: null,
+        duedate: "2022-05-06",
         flag: false,
         mark: "green",
         listId: 2,
@@ -28,6 +28,33 @@ var app = new Vue({
         flag: false,
         mark: "red",
         listId: 1,
+      },
+      {
+        id: 4,
+        title: "change light bulbs",
+        status: false,
+        duedate: "2022-07-06",
+        flag: false,
+        mark: "red",
+        listId: 1,
+      },
+      {
+        id: 5,
+        title: "practice writing",
+        status: false,
+        duedate: "2022-05-25",
+        flag: false,
+        mark: "red",
+        listId: 2,
+      },
+      {
+        id: 6,
+        title: "boxing",
+        status: false,
+        duedate: null,
+        flag: true,
+        mark: "red",
+        listId: 2,
       },
     ],
 
@@ -50,9 +77,6 @@ var app = new Vue({
     checkList: "idle",
     duedate: null,
     flagActive: false,
-    isSelectedBlack: true,
-    isSelectedRed: false,
-    isSelectedGreen: false,
 
     error: {
       taskName: "",
@@ -90,6 +114,7 @@ var app = new Vue({
   created() {
     this.idCounter = this.task.length;
     this.listIdCounter = this.listType.length;
+    this.task.mark = "black";
   },
   computed: {
     complete() {
@@ -134,16 +159,6 @@ var app = new Vue({
         return 0;
       }
 
-      function findDate(a, b) {
-        if (a.duedate < b.duedate) {
-          return 1;
-        }
-        if (a.duedate > b.duedate) {
-          return -1;
-        }
-        return 0;
-      }
-
       function sortDate(a, b) {
         return new Date(a.duedate) - new Date(b.duedate);
       }
@@ -155,10 +170,7 @@ var app = new Vue({
       } else if (this.filter == "flag") {
         this.task.sort(checkflag);
       } else if (this.filter == "date") {
-        let newTask = this.task.sort(findDate);
-        return newTask.sort(sortDate);
-      } else {
-        return this.task;
+        this.task.sort(sortDate);
       }
 
       if (this.showFlag) {
@@ -272,11 +284,6 @@ var app = new Vue({
       );
       this.listType.splice(checkListId, 1);
       this.showDeleteList = false;
-    },
-
-    selectMark(color) {
-      console.log(color);
-      this.isSelectedBlack = true;
     },
   },
 });
