@@ -137,6 +137,7 @@ var app = new Vue({
     editClassObject: {},
 
     delTaskId: 0,
+    delTaskName: "",
 
     listName: "",
     listIdCounter: 0,
@@ -145,6 +146,7 @@ var app = new Vue({
     editListId: 0,
 
     delListId: 0,
+    delListName: "",
 
     filter: "alpha",
     hideDone: false,
@@ -381,6 +383,7 @@ var app = new Vue({
     delItem(item) {
       this.showDelete = true;
       this.delTaskId = item.id;
+      this.delTaskName = item.title;
     },
     deleteItem() {
       let checkId = this.task.findIndex((data) => data.id === this.delTaskId);
@@ -416,6 +419,7 @@ var app = new Vue({
     delList(item) {
       this.showDeleteList = true;
       this.delListId = item.id;
+      this.delListName = item.title;
     },
     deleteList() {
       let checkListId = this.listType.findIndex(
