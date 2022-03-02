@@ -4,10 +4,10 @@ var app = new Vue({
     task: [
       {
         id: 1,
-        title: "fix leaking faucet",
+        title: "wash the clothes",
         status: false,
         duedate: null,
-        flag: true,
+        flag: false,
         mark: "black",
         listId: 1,
         classObject: {},
@@ -16,7 +16,7 @@ var app = new Vue({
         id: 2,
         title: "wash the dishes",
         status: false,
-        duedate: "2022-05-06",
+        duedate: null,
         flag: false,
         mark: "green",
         listId: 2,
@@ -42,7 +42,7 @@ var app = new Vue({
         id: 4,
         title: "change light bulbs",
         status: false,
-        duedate: "2022-07-06",
+        duedate: null,
         flag: false,
         mark: "red",
         listId: 2,
@@ -53,9 +53,9 @@ var app = new Vue({
       },
       {
         id: 5,
-        title: "practice writing",
+        title: "buy new lamp",
         status: false,
-        duedate: "2022-05-25",
+        duedate: null,
         flag: false,
         mark: "green",
         listId: 1,
@@ -133,7 +133,7 @@ var app = new Vue({
     editFlag: false,
     editList: "idle",
     editMark: "",
-    editDuedate: 0,
+    editDuedate: null,
     editClassObject: {},
 
     delTaskId: 0,
@@ -195,7 +195,7 @@ var app = new Vue({
         }
       }
 
-      function sortAlpha(a, b) {
+      this.task.sort((a, b) => {
         let sortA = a.title.toLowerCase(),
           sortB = b.title.toLowerCase();
         if (sortA < sortB) {
@@ -205,25 +205,39 @@ var app = new Vue({
           return 1;
         }
         return 0;
-      }
+      });
 
       function sortDate(a, b) {
-        return new Date(a.duedate) - new Date(b.duedate);
+        if (a.duedate === null && b.duedate !== null) {
+          return 1;
+        }
+        if (a.duedate !== null && b.duedate === null) {
+          return -1;
+        }
+        if (a.duedate > b.duedate) {
+          return 1;
+        }
+        if (a.duedate < b.duedate) {
+          return -1;
+        }
+        return 0;
       }
 
       this.listType.forEach((list) => {
         let sepList = this.task.filter((index) => index.listId === list.id);
-        this.sorts.forEach((data) => {
-          if (data.type === "undone") {
-            sepList = sepList.sort(compare);
-          } else if (data.type === "alpha") {
-            sepList = sepList.sort(sortAlpha);
-          } else if (data.type === "flag") {
-            sepList = sepList.sort(checkflag);
-          } else if (data.type === "date") {
-            sepList = sepList.sort(sortDate);
-          }
-        });
+        this.sorts
+          .filter((item) => item.id === list.id)
+          .forEach((sortType) => {
+            if (sortType.type === "undone") {
+              sepList = sepList.sort(compare);
+            }
+            if (sortType.type === "flag") {
+              sepList = sepList.sort(checkflag);
+            }
+            if (sortType.type === "date") {
+              sepList = sepList.sort(sortDate);
+            }
+          });
         this.filters
           .filter((item) => item.id === list.id)
           .forEach((data) => {
