@@ -97,6 +97,21 @@ var app = new Vue({
       },
     ],
 
+    filters: [
+      { id: 1, hideDone: false, showFlag: false },
+      { id: 2, hideDone: false, showFlag: false },
+    ],
+    sorts: [
+      {
+        id: 1,
+        type: "alpha",
+      },
+      {
+        id: 2,
+        type: "alpha",
+      },
+    ],
+
     checkItem: false,
     idCounter: 0,
     notListId: 0,
@@ -144,7 +159,6 @@ var app = new Vue({
   created() {
     this.idCounter = this.task.length;
     this.listIdCounter = this.listType.length;
-    this.task.mark = "black";
   },
   computed: {
     complete() {
@@ -157,6 +171,8 @@ var app = new Vue({
       return this.task.filter((data) => data.flag).length;
     },
     filteredTasks() {
+      let filtered = [];
+
       function compare(a, b) {
         if (!a.status && b.status) {
           return -1;
@@ -193,47 +209,63 @@ var app = new Vue({
         return new Date(a.duedate) - new Date(b.duedate);
       }
 
-      if (this.filter == "undone") {
-        this.task.sort(compare);
-      } else if (this.filter == "alpha") {
-        this.task.sort(sortAlpha);
-      } else if (this.filter == "flag") {
-        this.task.sort(checkflag);
-      } else if (this.filter == "date") {
-        this.task.sort(sortDate);
-      }
+      this.listType.forEach((list) => {
+        let sepList = this.task.filter((index) => index.listId === list.id);
+        this.sorts.forEach((data) => {
+          if (data.type === "undone") {
+            sepList = sepList.sort(compare);
+          } else if (data.type === "alpha") {
+            sepList = sepList.sort(sortAlpha);
+          } else if (data.type === "flag") {
+            sepList = sepList.sort(checkflag);
+          } else if (data.type === "date") {
+            sepList = sepList.sort(sortDate);
+          }
+        });
+        this.filters
+          .filter((item) => item.id === list.id)
+          .forEach((data) => {
+            if (data.showFlag) {
+              sepList = sepList.filter((item) => item.flag);
+            }
+            if (data.hideDone) {
+              sepList = sepList.filter((item) => !item.status);
+            }
+          });
+        filtered.push(...sepList);
+      });
 
-      if (this.showFlag) {
-        return this.task.filter((data) => data.flag);
-      } else if (this.hideDone) {
-        return this.task.filter((data) => !data.status);
-      } else {
-        return this.task;
-      }
+      return filtered;
+    },
+  },
+  watch: {
+    filters: {
+      handler() {},
+      deep: true,
     },
   },
   methods: {
     validateTask() {
-      if (this.taskName == "") {
+      if (this.taskName === "") {
         this.error.taskName = "Please fill in the task name";
         return;
       }
       this.error.taskName = "";
     },
     validateList() {
-      if (this.checkList == "idle") {
+      if (this.checkList === "idle") {
         this.error.select = "Please select list";
         return;
       }
       this.error.select = "";
     },
     configClass() {
-      if (this.mark == "green") {
+      if (this.mark === "green") {
         this.classObject = {
           "has-background-success-light": true,
           "has-text-primary-dark": true,
         };
-      } else if (this.mark == "red") {
+      } else if (this.mark === "red") {
         this.classObject = {
           "has-background-danger-light": true,
           "has-text-danger-dark": true,
@@ -271,7 +303,7 @@ var app = new Vue({
     },
 
     validateList() {
-      if (this.listName == "") {
+      if (this.listName === "") {
         this.error.listName = "Please fill in the list name";
         return;
       }
@@ -287,13 +319,17 @@ var app = new Vue({
         id: this.listIdCounter,
         title: this.listName,
       });
-      console.log(this.listIdCounter);
+      this.filters.push({
+        id: this.listIdCounter,
+        hideDone: false,
+        showFlag: false,
+      });
       this.listName = "";
       this.showAddList = false;
     },
 
     validEditTask() {
-      if (this.editTaskName == "") {
+      if (this.editTaskName === "") {
         this.error.taskName = "Please fill in the task name";
         return;
       }
@@ -310,12 +346,12 @@ var app = new Vue({
       this.editClassObject = item.classObject;
     },
     editConfig() {
-      if (this.editMark == "green") {
+      if (this.editMark === "green") {
         this.editClassObject = {
           "has-background-success-light": true,
           "has-text-primary-dark": true,
         };
-      } else if (this.editMark == "red") {
+      } else if (this.editMark === "red") {
         this.editClassObject = {
           "has-background-danger-light": true,
           "has-text-danger-dark": true,
@@ -347,13 +383,13 @@ var app = new Vue({
       this.delTaskId = item.id;
     },
     deleteItem() {
-      let checkId = this.task.findIndex((data) => data.id == this.delTaskId);
+      let checkId = this.task.findIndex((data) => data.id === this.delTaskId);
       this.task.splice(checkId, 1);
       this.showDelete = false;
     },
 
     validEditList() {
-      if (this.editListName == "") {
+      if (this.editListName === "") {
         this.error.listName = "Please fill in the list name";
         return;
       }
@@ -383,7 +419,7 @@ var app = new Vue({
     },
     deleteList() {
       let checkListId = this.listType.findIndex(
-        (data) => data.id == this.delListId
+        (data) => data.id === this.delListId
       );
       this.listType.splice(checkListId, 1);
       this.showDeleteList = false;

@@ -12,8 +12,10 @@
   </head>
   <body>
     <section class="hero">
-      <div class="hero-body is-flex">
-        <p class="title">My ToDo List</p>
+      <div class="hero-body">
+        <div class="container">
+          <p class="title">My ToDo List</p>
+        </div>
       </div>
     </section>
     <section id="app">
@@ -21,7 +23,7 @@
         <span class="subtitle mx-2">Completed: {{complete}} Tasks</span>
         <span class="subtitle mx-2">Incomplete: {{incomplete}} Tasks</span>
         <span class="subtitle mx-2">Flagged: {{flagged}} Tasks</span>
-        <button class="button is-link mx-5" @click="showAddList = true">
+        <button class="button is-dark mx-5" @click="showAddList = true">
           <p>Add new list</p>
           <span class="icon">
             <i class="fas fa-plus"></i>
@@ -276,7 +278,7 @@
           <div class="column is-3">
             <p class="subtitle my-3">{{list.title}}</p>
             <div class="card">
-              <header class="card-header has-background-link">
+              <header class="card-header has-background-dark">
                 <p class="card-header-title has-text-white-bis">Filters</p>
                 <p class="card-header-icon">
                   <span class="card-header-icon icon has-text-white-bis">
@@ -285,16 +287,21 @@
                 </p>
               </header>
               <div class="card-content">
-                <div class="content">
+                <div
+                  class="content"
+                  v-for="filterType in filters"
+                  :key="filterType.id"
+                  v-if="filterType.id == list.id"
+                >
                   <div class="control">
                     <label class="checkbox">
-                      <input type="checkbox" v-model="hideDone" />
+                      <input type="checkbox" v-model="filterType.hideDone" />
                       Hide completed tasks
                     </label>
                   </div>
                   <div class="control">
                     <label class="checkbox">
-                      <input type="checkbox" v-model="showFlag" />
+                      <input type="checkbox" v-model="filterType.showFlag" />
                       Show only flagged task
                     </label>
                   </div>
@@ -303,7 +310,7 @@
             </div>
             <br />
             <div class="card">
-              <header class="card-header has-background-link">
+              <header class="card-header has-background-dark">
                 <p class="card-header-title has-text-white-bis">Sort</p>
                 <p class="card-header-icon">
                   <span class="card-header-icon icon has-text-white-bis">
@@ -312,15 +319,28 @@
                 </p>
               </header>
               <div class="card-content">
-                <div class="content">
+                <div
+                  class="content"
+                  v-for="radioItem in sorts"
+                  :key="radioItem.id"
+                  v-if="radioItem.id == list.id"
+                >
                   <div class="control">
-                    <input type="radio" v-model="filter" value="alpha" />
+                    <input
+                      type="radio"
+                      v-model="radioItem.type"
+                      value="alpha"
+                    />
                     <label class="radio"> Sort alphabetically </label><br />
-                    <input type="radio" v-model="filter" value="undone" />
+                    <input
+                      type="radio"
+                      v-model="radioItem.type"
+                      value="undone"
+                    />
                     <label class="radio"> Sort incomplete tasks </label><br />
-                    <input type="radio" v-model="filter" value="flag" />
+                    <input type="radio" v-model="radioItem.type" value="flag" />
                     <label class="radio"> Sort flagged task first </label><br />
-                    <input type="radio" v-model="filter" value="date" />
+                    <input type="radio" v-model="radioItem.type" value="date" />
                     <label class="radio"> Sort by due date (ascending) </label>
                   </div>
                 </div>
@@ -401,7 +421,7 @@
               </div>
               <div class="field">
                 <p class="control">
-                  <a class="button is-link" @click="addTodo()">
+                  <a class="button is-dark" @click="addTodo()">
                     Add New Task
                   </a>
                 </p>
