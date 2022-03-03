@@ -64,26 +64,6 @@ var app = new Vue({
           "has-text-primary-dark": true,
         },
       },
-      {
-        id: 6,
-        title: "boxing",
-        status: false,
-        duedate: null,
-        flag: true,
-        mark: "black",
-        listId: 2,
-        classObject: {},
-      },
-      {
-        id: 7,
-        title: "practice judo",
-        status: false,
-        duedate: null,
-        flag: true,
-        mark: "black",
-        listId: 1,
-        classObject: {},
-      },
     ],
 
     listType: [
@@ -115,17 +95,17 @@ var app = new Vue({
     colors: [
       {
         id: 1,
-        class: "mx-1 icon has-text-dark box is-rounded has-background-dark",
+        class: "mx-1 icon box has-background-dark",
         name: "black",
       },
       {
         id: 2,
-        class: "mx-1 icon has-text-danger box has-background-danger",
+        class: "mx-1 icon box has-background-danger",
         name: "red",
       },
       {
         id: 3,
-        class: "mx-1 icon has-text-success box has-background-success",
+        class: "mx-1 icon box has-background-success",
         name: "green",
       },
     ],
@@ -304,7 +284,7 @@ var app = new Vue({
     },
     addTodo() {
       this.validateTask();
-      if (this.error.taskName !== "") {
+      if (this.error.taskName !== "" || this.error.showSelect === true) {
         return;
       }
       this.configClass();
@@ -348,6 +328,10 @@ var app = new Vue({
         id: this.listIdCounter,
         hideDone: false,
         showFlag: false,
+      });
+      this.sorts.push({
+        id: this.listIdCounter,
+        type: "alpha",
       });
       this.listName = "";
       this.showAddList = false;

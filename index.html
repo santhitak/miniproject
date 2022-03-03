@@ -19,17 +19,84 @@
       </div>
     </section>
     <section id="app">
-      <div class="container">
-        <span class="subtitle mx-2">Completed: {{complete}} Tasks</span>
-        <span class="subtitle mx-2">Incomplete: {{incomplete}} Tasks</span>
-        <span class="subtitle mx-2">Flagged: {{flagged}} Tasks</span>
-        <button class="button is-dark mx-5" @click="showAddList = true">
-          <p>Add new list</p>
-          <span class="icon">
-            <i class="fas fa-plus"></i>
-          </span>
-        </button>
+      <div class="container" style="margin-bottom: 5rem">
+        <div class="is-flex is-justify-content-center is-align-items-baseline">
+          <span class="subtitle mx-4 has-text-success"
+            >Completed: {{complete}} Tasks</span
+          >
+          <span class="subtitle mx-4 has-text-danger"
+            >Incomplete: {{incomplete}} Tasks</span
+          >
+          <span class="subtitle mx-4 has-text-link"
+            >Flagged: {{flagged}} Tasks</span
+          >
+          <button class="button mx-5 is-ghost" @click="showAddList = true">
+            <p>Add List</p>
+            <span class="icon">
+              <i class="fas fa-plus"></i>
+            </span>
+          </button>
+        </div>
         <br />
+        <div class="columns my-5">
+          <div class="column is-10">
+            <div class="field-body">
+              <div class="field">
+                <div class="control">
+                  <input
+                    class="input"
+                    type="text"
+                    placeholder="Task Name"
+                    v-model="taskName"
+                    style="min-width: 355px"
+                  />
+                  <br />
+                  <p v-if="error.taskName != ''" class="has-text-danger">
+                    {{error.taskName}}
+                  </p>
+                </div>
+              </div>
+              <div class="field">
+                <div class="select">
+                  <select v-model="checkList" style="min-width: 305px">
+                    <option value="idle">Select List</option>
+                    <option
+                      v-for="data in listType"
+                      :key="data.id"
+                      :value="data.id"
+                    >
+                      {{data.title}}
+                    </option>
+                  </select>
+                  <p v-if="error.showSelect" class="has-text-danger">
+                    {{error.select}}
+                  </p>
+                </div>
+              </div>
+              <div class="field">
+                <input class="input" type="date" v-model="duedate" />
+              </div>
+              <div class="field ml-3">
+                <input type="checkbox" v-model="flagActive" />
+              </div>
+              <span class="mr-4">Flag</span>
+              <div class="field is-flex is-flex-direction-row">
+                <div class="control" v-for="color in colors">
+                  <span :class="color.class" @click="mark = color.name">
+                    <span v-if="mark == color.name">
+                      <i class="fas fa-check-circle has-text-white"></i>
+                    </span>
+                  </span>
+                </div>
+              </div>
+              <div class="field ml-1">
+                <p class="control">
+                  <a class="button is-dark" @click="addTodo()"> Add Task </a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
         <br />
         <div class="columns" v-for="(list, index) in listType" :key="list.id">
           <div class="column is-8">
@@ -325,68 +392,6 @@
                     <label class="radio"> Sort by due date (ascending) </label>
                   </div>
                 </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="columns my-5">
-          <div class="column is-10">
-            <div class="field-body">
-              <div class="field">
-                <div class="control">
-                  <input
-                    class="input"
-                    type="text"
-                    placeholder="Task Name"
-                    v-model="taskName"
-                    style="min-width: 325px"
-                  />
-                  <br />
-                  <p v-if="error.taskName != ''" class="has-text-danger">
-                    {{error.taskName}}
-                  </p>
-                </div>
-              </div>
-              <div class="field">
-                <div class="select">
-                  <select v-model="checkList" style="min-width: 305px">
-                    <option value="idle">Select List</option>
-                    <option
-                      v-for="data in listType"
-                      :key="data.id"
-                      :value="data.id"
-                    >
-                      {{data.title}}
-                    </option>
-                  </select>
-                  <p v-if="error.showSelect" class="has-text-danger">
-                    {{error.select}}
-                  </p>
-                </div>
-              </div>
-              <div class="field">
-                <input class="input" type="date" v-model="duedate" />
-              </div>
-              <div class="field ml-3">
-                <input type="checkbox" v-model="flagActive" />
-              </div>
-              <span class="mr-4">Flag</span>
-              <div class="field is-flex is-flex-direction-row">
-                <div class="control" v-for="color in colors">
-                  <span :class="color.class" @click="mark = color.name">
-                    <span v-if="mark == color.name">
-                      <i class="fas fa-check-circle has-text-white"></i>
-                    </span>
-                  </span>
-                </div>
-              </div>
-              <div class="field ml-1">
-                <p class="control">
-                  <a class="button is-dark" @click="addTodo()">
-                    Add New Task
-                  </a>
-                </p>
               </div>
             </div>
           </div>
