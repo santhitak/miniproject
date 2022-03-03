@@ -368,27 +368,23 @@
               <div class="card-content">
                 <div
                   class="content"
-                  v-for="radioItem in sorts"
-                  :key="radioItem.id"
-                  v-if="radioItem.id == list.id"
+                  v-for="sortItem in sorts"
+                  :key="sortItem.id"
+                  v-if="sortItem.id == list.id"
                 >
                   <div class="control">
-                    <input
-                      type="radio"
-                      v-model="radioItem.type"
-                      value="alpha"
-                    />
+                    <input type="radio" v-model="sortItem.type" value="alpha" />
                     <label class="radio"> Sort alphabetically </label><br />
                     <input
                       type="radio"
-                      v-model="radioItem.type"
+                      v-model="sortItem.type"
                       value="undone"
                     />
                     <label class="radio"> Sort incomplete tasks first</label
                     ><br />
-                    <input type="radio" v-model="radioItem.type" value="flag" />
+                    <input type="radio" v-model="sortItem.type" value="flag" />
                     <label class="radio"> Sort flagged task first </label><br />
-                    <input type="radio" v-model="radioItem.type" value="date" />
+                    <input type="radio" v-model="sortItem.type" value="date" />
                     <label class="radio"> Sort by due date (ascending) </label>
                   </div>
                 </div>
