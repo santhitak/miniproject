@@ -284,7 +284,7 @@ var app = new Vue({
     },
     addTodo() {
       this.validateTask();
-      if (this.error.taskName !== "" || this.error.showSelect === true) {
+      if (this.taskName === "" || this.error.showSelect === true) {
         return;
       }
       this.configClass();
