@@ -97,6 +97,13 @@
             </div>
           </div>
         </div>
+        <div
+          v-if="error.duplicate != ''"
+          class="column is-5 notification is-danger is-light"
+        >
+          <button class="delete" @click="error.duplicate = ''"></button>
+          <p style="font-weight: 500">{{error.duplicate}}</p>
+        </div>
         <br />
         <div class="columns" v-for="(list, index) in listType" :key="list.id">
           <div class="column is-8">

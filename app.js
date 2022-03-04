@@ -125,6 +125,7 @@ var app = new Vue({
       select: "Please select list",
       showSelect: false,
       listName: "",
+      duplicate: "",
     },
 
     editTaskName: "",
@@ -265,6 +266,16 @@ var app = new Vue({
       this.error.taskName = "";
       this.error.showSelect = false;
     },
+    duplicateTask() {
+      let checkDep = this.task.filter((data) => data.listId === this.checkList);
+      checkDep.forEach((item) => {
+        if (item.title === this.taskName) {
+          this.checkList = "";
+          return (this.error.duplicate =
+            "Adding task failed. You already have this task in list.");
+        }
+      });
+    },
     configClass() {
       if (this.mark === "green") {
         this.classObject = {
@@ -283,6 +294,7 @@ var app = new Vue({
       }
     },
     addTodo() {
+      this.duplicateTask();
       this.validateTask();
       if (this.taskName === "" || this.error.showSelect === true) {
         return;
