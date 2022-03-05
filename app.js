@@ -270,11 +270,12 @@ var app = new Vue({
       let checkDep = this.task.filter((data) => data.listId === this.checkList);
       checkDep.forEach((item) => {
         if (item.title === this.taskName) {
-          this.checkList = "";
-          return (this.error.duplicate =
-            "Adding task failed. You already have this task in list.");
+          this.checkList = "idle";
+          alert("Adding task failed. You already have this task in list.");
+          return;
         }
       });
+      this.error.duplicate = "";
     },
     configClass() {
       if (this.mark === "green") {
@@ -296,7 +297,11 @@ var app = new Vue({
     addTodo() {
       this.duplicateTask();
       this.validateTask();
-      if (this.taskName === "" || this.error.showSelect === true) {
+      if (
+        this.taskName === "" ||
+        this.error.showSelect === true ||
+        this.error.duplicate !== ""
+      ) {
         return;
       }
       this.configClass();
