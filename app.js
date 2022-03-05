@@ -445,6 +445,7 @@ var app = new Vue({
         (data) => data.id === this.delListId
       );
       this.listType.splice(checkListId, 1);
+      this.task = this.task.filter((data) => data.listId !== this.delListId);
       this.showDeleteList = false;
     },
   },
